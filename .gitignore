@@ -1,0 +1,7 @@
+# ignore everything all folders
+*/
+
+# but not 
+!src
+
+node_modules
