@@ -1,5 +1,7 @@
 # ignore everything all folders
 */
+index.js
+index.d.ts
 
 # but not 
 !src
