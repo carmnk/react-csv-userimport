@@ -3,5 +3,6 @@
 
 # but not 
 !src
-
+!src*
+!src**
 node_modules
