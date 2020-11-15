@@ -1,7 +1,5 @@
 # ignore everything all folders
 */
-index*
-index**
 index.js
 index.d.ts
 
