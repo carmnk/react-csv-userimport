@@ -3,12 +3,12 @@
  */
 
 import * as React from "react";
-export { default as CTextFieldValueChecked } from './ctextfieldvaluechecked';
-export * from './ctextfieldvaluechecked';
+export { default as CTextFieldValueChecked } from "./ctextfieldvaluechecked";
+export * from "./ctextfieldvaluechecked";
 
-//export * from "./ctextfieldvaluechecked"; 
-//export { default as CTextFieldValueChecked } from "./ctextfieldvaluechecked"; 
-  
+//export * from "./ctextfieldvaluechecked";
+//export { default as CTextFieldValueChecked } from "./ctextfieldvaluechecked";
+
 export type Props1 = { text: string };
 
 export default class ExampleComponent extends React.Component<Props1> {
