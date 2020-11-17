@@ -10,7 +10,7 @@ import { mdiSubdirectoryArrowLeft } from "@mdi/js";
 import { mdiContentPaste } from "@mdi/js";
 import { useCombinedRefs, isRefValid } from "../utils/utils";
 
-type Props = {
+export type TextFieldVC_Props = {
   isError?: boolean | ((val: string) => boolean);
   onChange?: (
     val: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
@@ -27,13 +27,33 @@ type Props = {
   inputProps?: any;
 
   placeholder?: string;
+  autoComplete?: string;
+  autoFocus?: boolean;
+  color?: "primary" | "secondary";
+  disabled?: boolean;
+  error?: boolean; // will be overridden
+  fullWidth?: boolean;
+  id?: string;
+  label?: string;
+  margin?: "dense" | "normal" | "none";
+  multiline?: boolean;
+  name?: string;
+  required?: boolean;
+  rows?: number | string;
+  rowsMax?: number | string;
+  select?: boolean;
+  size?: "medium" | "small";
+  type?: "string";
+  variant?: any; //("filled" | "outlined" | "standard"); -> Type error!! 
+  style?: any;
+  InputLabelProps?: any;
 };
 interface CRefObject<T> {
   current: T | null;
 }
 
 const TextFieldValueChecked = forwardRef(
-  (props: Props, ref: React.RefObject<HTMLInputElement>) => {
+  (props: TextFieldVC_Props, ref: React.RefObject<HTMLInputElement>) => {
     const {
       isError,
       onChange,
@@ -45,8 +65,10 @@ const TextFieldValueChecked = forwardRef(
       useDelBtn,
       usePasteBtn,
       useEnterBtn,
+      variant ="standard", 
       ...other
     } = props;
+
 
     // isError boolean or function (val) => {.....return boolean};
     const isErrorInt =
@@ -148,6 +170,7 @@ const TextFieldValueChecked = forwardRef(
           handleOnInputChange(evt);
           if (onChange) onChange(evt);
         }}
+        variant={variant}
         {...other}
         inputRef={InputRefCombined}
         defaultValue={defaultValue}

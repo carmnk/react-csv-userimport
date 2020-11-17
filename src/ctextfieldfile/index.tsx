@@ -1,16 +1,23 @@
 import React, {useRef} from "react"; 
-import TextFieldValueChecked from "../ctextfieldvaluechecked";
+import TextFieldValueChecked, {TextFieldVC_Props} from "../ctextfieldvaluechecked";
 import { useCombinedRefs } from "../utils/utils";
 
 
 
-type Props = {
-  isError?: boolean | ((val: string) => boolean);
+// type Props = {
+//   isError?: boolean | ((val: string) => boolean);
+//   onEnter?: (val: { name: string }) => void;
+//   InputProps?: any;
+//   inputProps?: any;
+//   inputFileRef?: any;
+//   placeholder?: string;
+//   inputAccept?: string;
+// };
+
+type Props = Omit<TextFieldVC_Props, "onEnter"> & {
+  fileExtension?: string;
   onEnter?: (val: { name: string }) => void;
-  InputProps?: any;
-  inputProps?: any;
   inputFileRef?: any;
-  placeholder?: string;
   inputAccept?: string;
 };
 

@@ -1,27 +1,14 @@
 import React from "react"
-import TextFieldValueChecked from "../ctextfieldvaluechecked";
+import TextFieldValueChecked, { TextFieldVC_Props } from "../ctextfieldvaluechecked";
   
-type Props = {
-    isError?: (boolean | ((val: string) => boolean));
-    onChange?: ((val: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void);
-    onEnter?: ((val: string) => void);
-    onDeleteInput?: ((val: string) => void);
-    defaultValue?: string;
-    useDelBtn?: boolean;
-    usePasteBtn?: boolean;
-    useEnterBtn?: boolean;
-    InputProps?: any;
-    inputRef?: any;
-    value?: string;
-    fileExtension?: string; 
 
-};
+type Props = TextFieldVC_Props & { fileExtension?: string };
 
 const TextFieldFileUrlChecked = React.forwardRef((props: Props, ref: React.RefObject<HTMLInputElement>) => {
     const { fileExtension, ...other } = props;
     const FileExtension = (fileExtension !== null && fileExtension !== undefined && typeof fileExtension === "string") ? fileExtension : "csv"
 
-    const isErrorUrl = (val_str) => {
+    const isErrorUrl = (val_str: string) => {
         if (typeof val_str !== "string")
             return true; 
 

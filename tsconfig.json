@@ -10,11 +10,9 @@
             "es2017"
         ],
         "baseUrl": "src",
-        "paths": {
-            "ctextfieldvaluechecked/*": ["src/ctextfieldvaluechecked/*"] 
-        }, 
+
         "sourceMap": false,
-        "allowJs": false,
+        "allowJs": true,
         "jsx": "react",
         "declaration": true,
         "moduleResolution": "node",
