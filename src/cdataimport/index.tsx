@@ -1,49 +1,48 @@
 import React from "react";
-import Paper from '@material-ui/core/Paper';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import CTable from "./table"
+import Paper from "@material-ui/core/Paper";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
+import CTable, { TablePropTypes } from "../ctable/ctable";
+import CGrid from "../cgrid/cgrid";
+import { CRefObject } from "../utils/utils";
 
-
-import  TextFieldFile from "../ctextfieldfile";
-import TextFieldFileUrlChecked from "../ctextfieldurlchecked"
-import Checkbox from '@material-ui/core/Checkbox';
+import TextFieldFile from "../ctextfieldfile/ctextfieldfile";
+import TextFieldFileUrlChecked from "../ctextfieldurl/ctextfieldurl";
+import Checkbox from "@material-ui/core/Checkbox";
 import { Typography } from "@material-ui/core";
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
-import { css } from "@emotion/css"
-import Button from '@material-ui/core/Button';
-import Backdrop from '@material-ui/core/Backdrop';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import { makeStyles } from '@material-ui/core/styles';
-import Divider from '@material-ui/core/Divider';
+import MenuItem from "@material-ui/core/MenuItem";
+import Select from "@material-ui/core/Select";
+//import { css } from "@emotion/css";
+import Button from "@material-ui/core/Button";
+import Backdrop from "@material-ui/core/Backdrop";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import { makeStyles } from "@material-ui/core/styles";
+import Divider from "@material-ui/core/Divider";
 
-const worker = require("workerize-loader!../utils/worker"); // eslint-disable-line 
+const worker = require("workerize-loader!../utils/worker"); // eslint-disable-line
 
 // eslint-disable-next-line
 //import worker from "workerize-loader!../utils/worker"; // eslint-disable-line import/no-webpack-loader-syntax
 
-
-
 const useStyles = makeStyles((theme) => ({
-    backdrop: {
-        zIndex: theme.zIndex.drawer + 1,
-        color: '#fff',
-    },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: "#fff",
+  },
 }));
 
 type Props = {
-    onFinish: any; 
-}
+  onFinish: any;
+};
 
-
-const borderCSS = "border: 1px solid #eee; border-radius: 6px;-webkit-box-shadow: 0 7px 14px 0 rgba(65,69,88,.1), 0 3px 6px 0 rgba(0,0,0,.07);box-shadow: 0 7px 14px 0 rgba(65,69,88,.1), 0 3px 6px 0 rgba(0,0,0,.07);"
+const borderCSS =
+  "border: 1px solid #eee; border-radius: 6px;-webkit-box-shadow: 0 7px 14px 0 rgba(65,69,88,.1), 0 3px 6px 0 rgba(0,0,0,.07);box-shadow: 0 7px 14px 0 rgba(65,69,88,.1), 0 3px 6px 0 rgba(0,0,0,.07);";
 export default function CDataImport(props: Props) {
   const { onFinish } = props;
 
   const [value, setValue] = React.useState(0);
   const [ImportedData, setImportedData] = React.useState([]);
-  const [File, setFile] = React.useState([]);
+  const [File, setFile] = React.useState<File | null>(null);
   const [HasHeader, setHasHeader] = React.useState(false);
   const [CanUseHeader, setCanUseHeader] = React.useState(true);
   const [CsvDelimiter, setCsvDelimiter] = React.useState(0);
@@ -55,31 +54,30 @@ export default function CDataImport(props: Props) {
   //     console.log(`Ran ${count} loops`)
   // })
 
-  const handleChange = (event, newValue) => {
+  const handleChange = (event: any, newValue: number) => {
     setValue(newValue);
   };
 
-  const CheckIfHasHeader = (data0) => {
-    const cleanSepsandDels = (str) => {
+  const CheckIfHasHeader = (data0: TablePropTypes) => {
+    const cleanSepsandDels = (str: string) => {
       return str.replace(".", "").replace(",", "");
     };
     const keys = Object.keys(data0);
-    const data0Arr = [];
+    const data0Arr: string[] = [];
     keys.forEach((key, ikey) => {
-      if (key !== "datetime" && key !== "id")
-        data0Arr.push(cleanSepsandDels(data0[key]));
+      if (key !== "datetime" && key !== "id") data0Arr.push(cleanSepsandDels(data0[key]));
     });
     //const data0Arr =[cleanSepsandDels(data0.open), cleanSepsandDels(data0.high),
     //cleanSepsandDels(data0.low), cleanSepsandDels(data0.close), cleanSepsandDels(data0.vol)];
     for (const d of data0Arr) {
-      if (isNaN(d) === true) return true;
+      if (isNaN((d as unknown) as number) === true) return true;
     }
     return false;
   };
 
   const LoadCsv = async (
-    input,
-    type,
+    input: string | File | null,
+    type: "file" | "url",
     delimiter = "",
     newline = "",
     skipEmptyLines = true,
@@ -91,25 +89,9 @@ export default function CDataImport(props: Props) {
     const winst = new worker();
     let resprom;
     if (type === "file") {
-      resprom = await winst.csvfile(
-        input,
-        columnObjKeys,
-        delimiter,
-        newline,
-        skipEmptyLines,
-        preview,
-        columnObjKeys
-      );
+      resprom = await winst.csvfile(input, columnObjKeys, delimiter, newline, skipEmptyLines, preview, columnObjKeys);
     } else if (type === "url") {
-      resprom = await winst.csvurl(
-        input,
-        columnObjKeys,
-        delimiter,
-        newline,
-        skipEmptyLines,
-        preview,
-        columnObjKeys
-      );
+      resprom = await winst.csvurl(input, columnObjKeys, delimiter, newline, skipEmptyLines, preview, columnObjKeys);
     }
     console.log(resprom);
     const suc = resprom.suc;
@@ -158,7 +140,7 @@ export default function CDataImport(props: Props) {
       tablabel: "Local",
       tabcontent: (
         <TextFieldFile
-          inputAccept="text/csv, .csv, application/vnd.ms-excel"
+          inputFileAccept="text/csv, .csv, application/vnd.ms-excel"
           label="Load local file"
           style={{ margin: "0px", width: "100%" }}
           placeholder="Click to open local file"
@@ -167,7 +149,7 @@ export default function CDataImport(props: Props) {
             shrink: true,
           }}
           variant="outlined"
-          onEnter={(file) => {
+          onEnter={(file: File) => {
             LoadCsv(file, "file", "", "", true, 5);
           }}
         />
@@ -181,7 +163,7 @@ export default function CDataImport(props: Props) {
           label="Load file by url (https required)"
           style={{ margin: 0, width: "100%" }}
           placeholder="Enter or paste url"
-          ref={ref1}
+          ref={ref1 as any}
           inputRef={ref2}
           margin="normal"
           InputLabelProps={{
@@ -245,194 +227,116 @@ export default function CDataImport(props: Props) {
               ]}
             />
             <Paper style={{ marginTop: 10 }}>
-              <div
-                css={css`
-                  display: grid;
-                  grid-template-columns: 100px minmax(200px, max-content);
-                  margin: 0px;
-                  justify-content: center;
-                  align-items: center;
-                `}
-              >
-                <div style={{ gridColumn: "1 / span 2" }}>
-                  <Typography component="div">
-                    {" "}
-                    Previewing 5 Items of parsed csv file.{" "}
-                  </Typography>
-                  <Typography component="div">
-                    {" "}
-                    Please check if values are separated correctly. If not try
-                    to adjust parameters
-                  </Typography>
-                </div>
-
-                <div
-                  css={css`
-                    border: 1px solid black;
-                    ${borderCSS};
-                  `}
-                >
-                  <div
-                    css={css`
-                      width: 50px;
-                      margin: 0 auto;
-                    `}
-                  >
-                    <Checkbox
-                      color={CanUseHeader ? "primary" : "secondary"}
-                      checked={HasHeader}
-                      onChange={() => {
-                        if (CanUseHeader) setHasHeader(!HasHeader);
-                      }}
-                    />
-                  </div>
-                </div>
-                <div
-                  css={css`
-                    border: 1px solid black;
-                    ${borderCSS}
-                  `}
-                >
-                  {CanUseHeader ? (
-                    <Typography>csv contains header</Typography>
+              <div style={{ gridColumn: "1 / span 2" }}>
+                <Typography component="div"> Previewing 5 Items of parsed csv file. </Typography>
+                <Typography component="div">
+                  {" "}
+                  Please check if values are separated correctly. If not try to adjust parameters
+                </Typography>
+              </div>
+              <CGrid
+                content={[
+                  <Checkbox
+                    color={CanUseHeader ? "primary" : "secondary"}
+                    checked={HasHeader}
+                    key="cb1"
+                    onChange={() => {
+                      if (CanUseHeader) setHasHeader(!HasHeader);
+                    }}
+                  />,
+                  CanUseHeader ? (
+                    <Typography> csv contains header </Typography>
                   ) : (
-                    <Typography>
-                      csv contains unconvertible non-numeric header
-                    </Typography>
-                  )}
-                </div>
+                    <Typography>csv contains unconvertible non-numeric header</Typography>
+                  ),
 
-                <div
-                  css={css`
-                    border: 1px solid black;
-                    ${borderCSS}
-                  `}
-                >
                   <Select
                     labelId="select-csv-delimiter-char"
                     value={CsvDelimiter}
                     margin="dense"
                     variant="outlined"
+                    key="sel2"
                     onChange={(e, child) => {
-                      setCsvDelimiter(e.target.value);
+                      setCsvDelimiter(e.target.value as number);
                     }}
                   >
                     <MenuItem value={0}>auto</MenuItem>
                     <MenuItem value={10}>{csvDelimiterEnum[10]}</MenuItem>
                     <MenuItem value={20}>{csvDelimiterEnum[20]}</MenuItem>
-                  </Select>
-                </div>
-                <div
-                  css={css`
-                    border: 1px solid black;
-                    ${borderCSS}
-                  `}
-                >
-                  <Typography component="span"> csv delimiter char</Typography>
-                </div>
+                  </Select>,
 
-                <div
-                  css={css`
-                    border: 1px solid black;
-                    ${borderCSS}
-                  `}
-                >
+                  <Typography key="tp2" component="span">
+                    csv delimiter char
+                  </Typography>,
+
                   <Select
                     labelId="select-csv-newline-char"
                     value={CsvNewLine}
                     margin="dense"
                     variant="outlined"
+                    key="sel3"
                     onChange={(e, child) => {
-                      setCsvNewLine(e.target.value);
+                      setCsvNewLine(e.target.value as number);
                     }}
                   >
                     <MenuItem value={0}>auto</MenuItem>
                     <MenuItem value={10}>\r</MenuItem>
                     <MenuItem value={20}>\n</MenuItem>
                     <MenuItem value={30}>\r\n</MenuItem>
-                  </Select>
-                </div>
-                <div
-                  css={css`
-                    border: 1px solid black;
-                    ${borderCSS}
-                  `}
-                >
-                  <Typography component="span">
+                  </Select>,
+                  <Typography key="tp3" component="span">
                     {" "}
                     csv newline char (auto recommended)
-                  </Typography>
-                </div>
-              </div>
+                  </Typography>,
+                ]}
+              />
               <Divider variant="middle" />
-              <div
-                css={css`
-                  display: grid;
-                  grid-template-columns: 50% 50%;
-                  margin: 10px 0;
-                  justify-content: center;
-                  align-items: center;
-                  grid-column: 1 / span 2;
-                `}
-              >
-                <div
-                  css={css`
-                    justify-self: center;
-                    align-self: center;
-                  `}
-                >
+
+              <CGrid
+                content={[
                   <Button
                     variant="contained"
                     color="secondary"
+                    key="btn4"
                     onClick={() => {
-                      LoadCsv(
-                        File,
-                        "file",
-                        csvDelimiterEnum[CsvDelimiter],
-                        csvNewLineEnum[CsvNewLine],
-                        true,
-                        5
-                      );
+                      LoadCsv(File, "file", csvDelimiterEnum[CsvDelimiter], csvNewLineEnum[CsvNewLine], true, 5);
                     }}
                   >
                     Reload Csv
-                  </Button>
-                </div>
-                <div
-                  css={css`
-                    justify-self: center;
-                    align-self: center;
-                  `}
-                >
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => {
-                      setBackdropOpen(true);
-                      LoadCsv(
-                        File,
-                        "file",
-                        csvDelimiterEnum[CsvDelimiter],
-                        csvNewLineEnum[CsvNewLine],
-                        true,
-                        0,
-                        true
-                      );
-                    }}
-                  >
-                    Continue
-                  </Button>
-                  <Backdrop
-                    className={classes.backdrop}
-                    open={BackdropOpen}
-                    onClick={() => {
-                      setBackdropOpen(false);
-                    }}
-                  >
-                    <CircularProgress color="inherit" />
-                  </Backdrop>
-                </div>
-              </div>
+                  </Button>,
+
+                  <React.Fragment key="frg5">
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      key="btn5"
+                      onClick={() => {
+                        setBackdropOpen(true);
+                        LoadCsv(
+                          File,
+                          "file",
+                          csvDelimiterEnum[CsvDelimiter],
+                          csvNewLineEnum[CsvNewLine],
+                          true,
+                          0,
+                          true
+                        );
+                      }}
+                    >
+                      Continue
+                    </Button>
+                    <Backdrop
+                      className={classes.backdrop}
+                      open={BackdropOpen}
+                      onClick={() => {
+                        setBackdropOpen(false);
+                      }}
+                    >
+                      <CircularProgress color="inherit" />
+                    </Backdrop>
+                  </React.Fragment>,
+                ]}
+              />
             </Paper>
           </>
         ) : (
@@ -453,8 +357,7 @@ export default function CDataImport(props: Props) {
         >
           {tabData.map((val, idx) => {
             const tab = tabData[idx];
-            const disabled =
-              tab.disabled === true && isdataimported === false ? true : false;
+            const disabled = tab.disabled === true && isdataimported === false ? true : false;
 
             return <Tab label={tab.tablabel} disabled={disabled} key={idx} />;
           })}
@@ -462,9 +365,7 @@ export default function CDataImport(props: Props) {
       </Paper>
 
       <div style={{ margin: "20px 10px 0px 10px" }}>
-        <div style={{ position: "relative", top: 0 }}>
-          {tabData[value].tabcontent}
-        </div>
+        <div style={{ position: "relative", top: 0 }}>{tabData[value].tabcontent}</div>
       </div>
     </>
   );

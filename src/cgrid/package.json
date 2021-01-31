@@ -1,3 +1,4 @@
 {
-    "main": "index.js"
+    "main": "cgrid.js",
+    "types": "cgrid.d.ts"
 }

@@ -1,8 +1,10 @@
 
 node_modules
+docs
+scripts
+src
 .eslintrc.js
 .eslintignore
 gitignore
 tsconfig.json
-build
-src
+.prettierrc.js

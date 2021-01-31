@@ -1,11 +1,2 @@
-# ignore everything all folders
-*/
-index.js
-index.d.ts
-
-# but not 
-!src
-!src*
-!src**
-!src/*
 node_modules
+dist
